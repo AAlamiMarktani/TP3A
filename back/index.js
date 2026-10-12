@@ -1,13 +1,15 @@
-const express = require("express");
-const app = express()
+import express from 'express'
+import dotenv from 'dotenv'
 
-const port = 4000
- 
-app.get("/", (req, res) => {
-    res.send("Hello from back")
+dotenv.config()
+
+const app = express()
+const port = process.env.PORT || 3000
+
+app.get('/', (req, res) => {
+    res.send('Mon premier backend marche !')
 })
 
 app.listen(port, () => {
-    console.log("Server tourne bien" + port)
+    console.log("serveur tourne bien au " + port)
 })
-
