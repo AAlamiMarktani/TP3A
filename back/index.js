@@ -1,15 +1,38 @@
-import express from 'express' //bibliothque pour cree un serveur 
-import dotenv from 'dotenv' // la bibliothque pour charger les variables d'environnement depuis un fichier .env
+require("dotenv").config();
 
-dotenv.config() // lire le fichier env a la racine du projet et charger les variables d'environnement dans process.env
+const express = require("express");
+const mongoose = require("mongoose");
 
-const app = express() // initialiser l'application express
-const port = process.env.PORT ||4000 // definir le port sur lequel le serveur va ecouter les requetes
+const app = express();
 
-app.get('/', (req, res) => {
-    res.send('Mon premier backend marche !')
-}) // definer une route 
+// Middlewares
+app.use(express.json());
 
-app.listen(port, () => {
-    console.log("serveur tourne bien au " + port)
-}) // demarrer le serveur et ecouter les requetes sur le port defini
+// Connexion à MongoDB
+async function connectDB() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("✅ Connexion à MongoDB réussie !");
+  } catch (error) {
+    console.error("❌ Erreur de connexion MongoDB :", error.message);
+    process.exit(1);
+  }
+}
+
+// Route de test
+app.get("/", (req, res) => {
+  res.json({ message: "Serveur Express opérationnel !" });
+});
+
+// Démarrage après connexion à la base
+async function startServer() {
+  await connectDB();
+
+  const PORT = process.env.PORT || 3000;
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Serveur lancé sur le port ${PORT}`);
+  });
+}
+
+startServer();
